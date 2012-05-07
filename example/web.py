@@ -36,6 +36,7 @@ class WebModel(HasTraits):
             ('Stamen Watercolor', ('a.tile.stamen.com', '/watercolor/%d/%d/%d.jpg')),
             ('Stamen Toner', ('tile.stamen.com', '/toner/%d/%d/%d.jpg')),
             ('Stamen Terrain', ('tile.stamen.com', '/terrain-background/%d/%d/%d.png')),
+            ('Local TileCache', ('localhost:8080', '/1.0.0/basic/%d/%d/%d.jpg')),
             ]
             )
 
