@@ -62,31 +62,30 @@ class GeoJSONOverlay(AbstractOverlay):
 def process_raw(data):
     # Process into a list of polygons?
     geojs = geojson.loads(data.replace('\r\n', ''))
-    
-    geotype = geojs.type
+    geotype = geojs['type']
     polys = []
     if geotype == "FeatureCollection":
-        features = geojs.features
-        for feature in geojs.features:
+        features = geojs['features']
+        for feature in geojs['features']:
             p = []
-            process_geometry(feature.geometry, p)
+            process_geometry(feature['geometry'], p)
             polys.append(p)
     elif geotype == "Feature":
-        process_geometry(geojs.geometry, polys)
+        process_geometry(geojs['geometry'], polys)
 
     return polys
 
 def process_geometry(obj, polys):
-    if obj.type == "MultiPolygon":
-        for poly in obj.coordinates:
+    if obj['type'] == "MultiPolygon":
+        for poly in obj['coordinates']:
             polys.extend(WGS84_to_screen(np.array(poly)))
-    elif obj.type == "Polygon":
-        polys.extend(WGS84_to_screen(np.array(obj.coordinates)))
-    elif obj.type == "GeometryCollection":
-        for geo in obj.geometries:
+    elif obj['type'] == "Polygon":
+        polys.extend(WGS84_to_screen(np.array(obj['coordinates'])))
+    elif obj['type'] == "GeometryCollection":
+        for geo in obj['geometries']:
             process_geometry(geo, polys)
     else:
-        raise Exception("Can't handle %s geometry"%obj.type)
+        raise Exception("Can't handle %s geometry"%obj['type'])
 
 def WGS84_to_screen(coords):
     coords[:,:,0] = (coords[:,:,0] + 180.) / 360.
