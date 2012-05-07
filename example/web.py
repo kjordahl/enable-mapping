@@ -5,6 +5,8 @@ from traits.api import HasTraits, Instance, Str, List, Property, Dict
 from mapping.enable.api import MappingCanvas, MappingViewport, HTTPTileManager
 from mapping.enable.primitives.api import GeoCircle
 
+HTTP_PORT = 80
+
 class WebModel(HasTraits):
 
     server = Str
@@ -12,7 +14,12 @@ class WebModel(HasTraits):
     
     def _server_changed(self, new):
         server, url = self.servers[new]
-        self.canvas.tile_cache.trait_set(server=server, url=url)
+        if ':' in server:
+            server, port = server.split(':')
+            port = int(port)
+        else:
+            port = HTTP_PORT
+        self.canvas.tile_cache.trait_set(server=server, port=port, url=url)
 
     def _server_default(self):
         return self.servers.keys()[0]
